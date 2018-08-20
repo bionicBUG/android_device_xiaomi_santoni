@@ -223,8 +223,9 @@ TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/rootdir/recovery/fstab.qcom
 # SELinux
 -include device/qcom/sepolicy/sepolicy.mk
 BOARD_PLAT_PRIVATE_SEPOLICY_DIR += $(DEVICE_PATH)/sepolicy/private
-BOARD_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy/vendor
-BOARD_SEPOLICY_VERS := 28.0
+#BOARD_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy/vendor
+#BOARD_SEPOLICY_VERS := 28.0
+BOARD_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy/minimal
 
 # Treble
 ENABLE_VENDOR_IMAGE := true
