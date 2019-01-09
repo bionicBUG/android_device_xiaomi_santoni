@@ -214,6 +214,11 @@ PRODUCT_PACKAGES += \
     libqcomfm_jni \
    qcom.fmradio
 
+# fwk-detect
+PRODUCT_PACKAGES += \
+    libqti_vndfwk_detect \
+    libqti_vndfwk_detect.vendor
+
 # Gatekeeper HAL
 PRODUCT_PACKAGES += \
     android.hardware.gatekeeper@1.0-impl \
