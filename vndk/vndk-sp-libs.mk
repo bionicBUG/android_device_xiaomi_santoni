@@ -16,6 +16,7 @@ VNDK_SP_LIBRARIES := \
     libc++ \
     libcompiler_rt \
     libcutils \
+    libdexfile_support \
     libft2 \
     libhardware \
     libhidlbase \
