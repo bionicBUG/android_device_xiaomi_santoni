@@ -330,8 +330,8 @@ PRODUCT_PACKAGES += \
     XiaomiParts
 
 PRODUCT_BOOT_JARS += \
-    QPerformance \
-    UxPerformance
+    #QPerformance \
+    #UxPerformance
 
 # Power
 PRODUCT_PACKAGES += \
@@ -395,7 +395,7 @@ PRODUCT_PACKAGES += \
     ims-ext-common
 
 PRODUCT_BOOT_JARS += \
-    telephony-ext
+    #telephony-ext
 
 # Seccomp policy
 PRODUCT_COPY_FILES += \
@@ -472,4 +472,4 @@ PRODUCT_COPY_FILES += \
 
 # Wi-Fi Display
 PRODUCT_BOOT_JARS += \
-    WfdCommon
+    #WfdCommon
