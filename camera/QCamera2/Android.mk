@@ -118,7 +118,7 @@ endif
 #LOCAL_STATIC_LIBRARIES := libqcamera2_util
 LOCAL_STATIC_LIBRARIES := android.hardware.camera.common@1.0-helper
 LOCAL_C_INCLUDES += \
-        $(TARGET_OUT_HEADERS)/qcom/display
+        $(TARGET_OUT_HEADERS)/qcom-caf/msm8996/display
 LOCAL_C_INCLUDES += \
         hardware/qcom-caf/msm8996/display/libqservice
 LOCAL_SHARED_LIBRARIES := liblog libhardware libutils libcutils libdl libsync
