@@ -326,8 +326,8 @@ PRODUCT_PACKAGES += \
     Updates
 
 # Xiaomi Parts
-PRODUCT_PACKAGES += \
-    XiaomiParts
+#PRODUCT_PACKAGES += \
+   # XiaomiParts
 
 PRODUCT_BOOT_JARS += \
     #QPerformance \
