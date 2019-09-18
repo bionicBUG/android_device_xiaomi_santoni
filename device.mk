@@ -399,7 +399,7 @@ PRODUCT_PACKAGES += \
     ims-ext-common
 
 PRODUCT_BOOT_JARS += \
-    #telephony-ext
+    telephony-ext
 
 # Seccomp policy
 PRODUCT_COPY_FILES += \
