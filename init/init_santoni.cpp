@@ -42,10 +42,12 @@
 #include <android-base/strings.h>
 
 #include "property_service.h"
-#include "vendor_init.h"
 
 using android::base::GetProperty;
 using android::init::property_set;
+
+namespace android {
+namespace init {
 
 typedef struct {
     char const *heapstartsize;
@@ -129,4 +131,6 @@ void vendor_load_properties() {
     property_set("dalvik.vm.heapmaxfree", dprop.heapmaxfree);
 
     init_target_properties();
+}
+}
 }
