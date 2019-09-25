@@ -148,7 +148,7 @@ PRODUCT_PACKAGES += \
 
 # Camera
 PRODUCT_PACKAGES += \
-   # camera.msm8937 \
+    camera.msm8937 \
     Snap
 
 PRODUCT_PACKAGES += \
