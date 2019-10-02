@@ -338,8 +338,8 @@ PRODUCT_PACKAGES += \
    # XiaomiParts
 
 PRODUCT_BOOT_JARS += \
-    #QPerformance \
-    #UxPerformance
+    QPerformance \
+    UxPerformance
 
 # Power
 PRODUCT_PACKAGES += \
