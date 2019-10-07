@@ -67,4 +67,9 @@ CAMERA2_SENSOR_MODULES="$LINEAGE_ROOT"/vendor/"$VENDOR"/"$DEVICE"/proprietary/ve
 
 sed -i "s|/system/etc/camera/|/vendor/etc/camera/|g" "$CAMERA2_SENSOR_MODULES"
 
+# libmmcamera_ppeiscore_shim
+
+LIBMMCAM="$LINEAGE_ROOT"/vendor/"$VENDOR"/"$DEVICE"/proprietary/vendor/lib/libmmcamera_ppeiscore.so
+patchelf --replace-needed libmmcamera_ppeiscore.so libmmcamera_ppeiscore_shim.so "$LIBMMCAM"
+
 "$MY_DIR"/setup-makefiles.sh

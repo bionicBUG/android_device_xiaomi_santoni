@@ -1,0 +1,18 @@
+/* libmmcamera_ppeiscore.so */
+
+cc_library_shared {
+       name: "libmmcamera_ppeiscore_shim",
+       proprietary: true,
+       defaults: ["hidl_defaults"],
+       srcs: [
+             "libmmcamera_ppeiscore_shim.cpp",
+       ],
+       cflags: [
+             "-Werror",
+             "-Wextra",
+             "-Wall",
+       ],
+       shared_libs: [
+             "libutils",
+       ],
+}       
