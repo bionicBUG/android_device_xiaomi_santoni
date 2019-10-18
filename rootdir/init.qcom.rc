@@ -1,4 +1,4 @@
-# Copyright (c) 2009-2012, 2014-2017, The Linux Foundation. All rights reserved.
+# Copyright (c) 2009-2012, 2014-2019, The Linux Foundation. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -64,6 +64,11 @@ on init
 
 on post-fs
     chmod 0755 /sys/kernel/debug/tracing
+   
+# create symlink for vendor mount points
+    symlink /vendor/firmware_mnt /firmware
+    symlink /vendor/bt_firmware /bt_firmware
+    symlink /vendor/dsp /dsp
 
 on early-boot
     # set RLIMIT_MEMLOCK to 64MB
@@ -236,6 +241,10 @@ on post-fs-data
 
     # Create directory used by media clients
     mkdir /data/vendor/media 0770 mediacodec media
+
+#Create directory for tftp
+    mkdir /data/vendor/tombstones 0771 system system
+    mkdir /data/vendor/tombstones/rfs 0771 system system
 
     #Create directories for Fingerprint
     mkdir /data/vendor/misc/qti_fp 0770 system system
@@ -681,7 +690,7 @@ on property:drmdiag.load=0
 
 service qcom-sh /vendor/bin/init.qcom.sh
     class late_start
-    user system
+    user root
     group root system radio
     oneshot
 
@@ -885,8 +894,8 @@ service poweroffhandler /system/bin/poweroffhandler
 
 service time_daemon /vendor/bin/time_daemon
     class main
-    user root
-    group root
+    user system
+    group system
     writepid /dev/cpuset/system-background/tasks
 
 service vendor.power_off_alarm /vendor/bin/power_off_alarm
@@ -894,6 +903,14 @@ service vendor.power_off_alarm /vendor/bin/power_off_alarm
     group system
     disabled
     oneshot
+
+#Set GPU Opengles version
+    on property:vendor.opengles.version=*
+    setprop ro.opengles.version ${vendor.opengles.version}
+
+#Set gpu available frequencies property
+    on property:vendor.gpu.available_frequencies=*
+     setprop ro.vendor.gpu.available_frequencies ${vendor.gpu.available_frequencies}
 
 service vendor.audio-hal-2-0 /vendor/bin/hw/android.hardware.audio@2.0-service
     override
@@ -908,6 +925,7 @@ service vendor.audio-hal-2-0 /vendor/bin/hw/android.hardware.audio@2.0-service
     # and its .rc file has an "onrestart restart audio-hal" rule, thus
     # an additional auto-restart from the init process isn't needed.
     oneshot
+    interface android.hardware.audio@5.0::IDevicesFactory default
     interface android.hardware.audio@4.0::IDevicesFactory default
     interface android.hardware.audio@2.0::IDevicesFactory default
 

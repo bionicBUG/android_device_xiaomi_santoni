@@ -1,4 +1,4 @@
-# Copyright (c) 2013-2017, The Linux Foundation. All rights reserved.
+# Copyright (c) 2014-2016, The Linux Foundation. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are
@@ -27,62 +27,37 @@
 #
 #
 
-on early-init
-    mkdir /firmware 0771 system system
-    mkdir /system 0777 root root
-    mkdir /dsp 0771 media media
-
 on fs
-    mount_all /vendor/etc/fstab.qcom
-    swapon_all /vendor/etc/fstab.qcom
+    wait /dev/block/platform/soc/${ro.boot.bootdevice}
+    symlink /dev/block/platform/soc/${ro.boot.bootdevice} /dev/block/bootdevice
 
-    setprop sys.usb.ffs.aio_compat 1
+    mount_all /vendor/etc/fstab.qcom
+    write /proc/sys/vm/page-cluster 0
+    write /proc/sys/vm/swappiness 100
+
+    # Set permissions for persist partition
     chown root system /mnt/vendor/persist
     chmod 0771 /mnt/vendor/persist
+    mkdir /mnt/vendor/persist/alarm 0770 system system
+    mkdir /mnt/vendor/persist/bluetooth 0770 bluetooth bluetooth
     mkdir /mnt/vendor/persist/data 0700 system system
-    mkdir /mnt/vendor/persist/bms 0700 root system
+    mkdir /mnt/vendor/persist/display 0770 system graphics
+    mkdir /mnt/vendor/persist/time 0770 system system
     restorecon_recursive /mnt/vendor/persist
- 
-on init
-   write /sys/module/qpnp_rtc/parameters/poweron_alarm 1
-   
+
+    setprop sys.usb.ffs.aio_compat 1
+
 on post-fs-data
+    mkdir /persist/data/sfs 0700 system system
+    mkdir /persist/data/tz 0700 system system
+    mkdir /data/misc/hbtp 0750 system system
+    mkdir /data/misc/dts 0770 media audio
 
-#Create folder for mm-qcamera-daemon
-mkdir /data/vendor/qcam/ 0770 camera camera
-
-#start camera server as daemon
+# Start camera server as daemon
 service qcamerasvr /vendor/bin/mm-qcamera-daemon
-    class late_start
+    class main
     user camera
     group camera system inet input graphics
-    writepid /dev/cpuset/system-background/tasks
-	
-#Start up peripheral manager
-service vendor.per_mgr /vendor/bin/pm-service
-    class core
-    user system
-    group system
-    ioprio rt 4
-    writepid /dev/cpuset/system-background/tasks
-
-service vendor.per_proxy /vendor/bin/pm-proxy
-    class core
-    user system
-    group system
-    disabled
-    writepid /dev/cpuset/system-background/tasks
-
-service qfp-daemon /system/bin/qfp-daemon
-   class late_start
-   user system
-   group system drmrpc
-
-on property:init.svc.vendor.per_mgr=running
-    start vendor.per_proxy
-
-on property:sys.shutdown.requested=*
-    stop vendor.per_proxy
 
 # Allow usb charging to be disabled peristently
 on property:persist.usb.chgdisabled=1
@@ -91,152 +66,93 @@ on property:persist.usb.chgdisabled=1
 on property:persist.usb.chgdisabled=0
     write /sys/class/power_supply/battery/charging_enabled 1
 
-service qrngd /system/bin/qrngd -f
-   class main
-   user root
-   group root
-
-service qrngp /system/bin/qrngp -f
-   class main
-   user root
-   group root
-   oneshot
-   disabled
-
-on property:sys.boot_completed=1
-   start qrngp
-
 service vendor.qseecomd /vendor/bin/qseecomd
-   class core
-   user root
-   group root
-   writepid /dev/cpuset/system-background/tasks
+    class core
+    user root
+    group root
 
-service perfd /vendor/bin/perfd
-   class main
-   user root
-   disabled
-
-service thermal-engine /vendor/bin/thermal-engine
-   class main
-   user root
-   socket thermal-send-client stream 0666 system system
-   socket thermal-recv-client stream 0660 system system
-   socket thermal-recv-passive-client stream 0666 system system
-   socket thermal-send-rule stream 0660 system system
-   group root
-   writepid /dev/cpuset/system-background/tasks
-
-service adsprpcd /vendor/bin/adsprpcd
-   class main
-   user media
-   group media
-
-service audiod /vendor/bin/audiod
-   class late_start
-   user system
-   group system
+service thermal-engine /vendor/bin/thermal-engine -c ${sys.qcom.thermalcfg:-/vendor/etc/thermal-engine.conf}
+    class main
+    user root
+    socket thermal-send-client stream 0666 system system
+    socket thermal-recv-client stream 0660 system system
+    socket thermal-recv-passive-client stream 0666 system system
+    socket thermal-send-rule stream 0660 system system
+    group root
 
 service wcnss-service /vendor/bin/wcnss_service
-    class main
+    class late_start
     user system
     group system wifi radio
     oneshot
 
-service vendor.imsqmidaemon /vendor/bin/imsqmidaemon
+## imsdatadaemon starts with root and UID will be downgraded to SYSTEM.
+service vendor.imsqmidaemon /system/vendor/bin/imsqmidaemon
     class main
     user system
     socket ims_qmid stream 0660 system radio
     group radio log diag
-    writepid /dev/cpuset/system-background/tasks
 
-service vendor.imsdatadaemon /vendor/bin/imsdatadaemon
+# imsdatadaemon starts with root and UID will be downgraded to SYSTEM.
+service vendor.imsdatadaemon /system/vendor/bin/imsdatadaemon
     class main
     user system
     socket ims_datad stream 0660 system radio
     group system wifi radio inet log diag
-    writepid /dev/cpuset/system-background/tasks
     disabled
 
 on property:vendor.ims.QMI_DAEMON_STATUS=1
     start vendor.imsdatadaemon
 
 service vendor.ims_rtp_daemon /vendor/bin/ims_rtp_daemon
-   class main
-   user system
-   group radio diag inet log
-   writepid /dev/cpuset/system-background/tasks
-   disabled
+    class main
+    user system
+    group radio diag inet log
 
 service vendor.imsrcsservice /vendor/bin/imsrcsd
-   class main
-   user system
-   group radio diag inet log
-   writepid /dev/cpuset/system-background/tasks
-   disabled
+    class main
+    user system
+    group radio diag inet log
 
 on property:vendor.ims.DATA_DAEMON_STATUS=1
-   start vendor.ims_rtp_daemon
-   start vendor.imsrcsservice
+    restart vendor.ims_rtp_daemon
 
-service hbtp /vendor/bin/hbtp_daemon
+service ppd /vendor/bin/mm-pp-dpps
+    class hal
+    user system
+    group system graphics
+    socket pps stream 0660 system system
+
+on property:init.svc.surfaceflinger=restarting
+    restart vendor.hwcomposer-2-1
+
+on charger
+    setprop sys.usb.configfs 0
+    start vendor.power_off_alarm
+
+service adsprpcd /vendor/bin/adsprpcd
     class main
+    user media
+    group media
+
+service vendor.per_mgr /vendor/bin/pm-service
+    class core
+    user system
+    group system net_raw
+
+service vendor.per_proxy /vendor/bin/pm-proxy
+    class core
     user system
     group system
     disabled
 
-on property:init.svc.surfaceflinger=stopped
-    stop ppd
+on property:init.svc.vendor.per_mgr=running
+    start vendor.per_proxy
 
-on property:init.svc.surfaceflinger=running
-    start ppd
+on property:sys.powerctl=*
+    stop vendor.per_proxy
+    stop vendor.ims_rtp_daemon
 
-on property:init.svc.surfaceflinger=restarting
-    stop ppd
-
-on property:init.svc.zygote=stopped
-    stop ppd
-
-on property:init.svc.zygote=running
-    start ppd
-
-on property:init.svc.zygote=restarting
-    stop ppd
-
-service vendor.hvdcp_opti /vendor/bin/hvdcp_opti
-    class main
-    user root
-    group system wakelock
-
-on charger
-    write /sys/devices/system/cpu/cpu2/online 0
-    write /sys/devices/system/cpu/cpu3/online 0
-    write /sys/module/lpm_levels/parameters/sleep_disabled 0
-    wait /dev/block/bootdevice/by-name/system
-    mount ext4 /dev/block/bootdevice/by-name/system /system ro barrier=1
-    start vendor.hvdcp_opti
-
-on boot
-	write /dev/cpuset/top-app/cpus 0-7
-	write /dev/cpuset/top-app/boost/cpus 4-7
-	write /dev/cpuset/foreground/cpus 0-6
-	write /dev/cpuset/foreground/boost/cpus 0-6
-	write /dev/cpuset/background/cpus 0-1
-	write /dev/cpuset/system-background/cpus 0-3
-
-        # add a cpuset for the camera daemon
-        # we want all cores for camera
-        mkdir /dev/cpuset/camera-daemon
-        write /dev/cpuset/camera-daemon/cpus 0-3
-        write /dev/cpuset/camera-daemon/mems 0
-        chown system system /dev/cpuset/camera-daemon
-        chown system system /dev/cpuset/camera-daemon/tasks
-        chmod 0664 /dev/cpuset/camera-daemon/tasks
-
-service ppd /vendor/bin/mm-pp-dpps
-    class late_start
-    user system
-    group system graphics
-    socket pps stream 0660 system system
-    disabled
-
+on property:sys.boot_completed=1
+   # Enable ZRAM on boot_complete
+   swapon_all /vendor/etc/fstab.qcom
