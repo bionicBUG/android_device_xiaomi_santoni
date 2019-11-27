@@ -175,6 +175,11 @@ ro.sys.fw.dex2oat_thread_count=6 \
 dalvik.vm.bg-dex2oat-threads=2 \
 dalvik.vm.dex2oat-threads=6
 
+PRODUCT_PROPERTY_OVERRIDES += \
+ro.vendor.qti.sys.fw.bservice_enable=true \
+debug.qcom_ignore_qperf=true \
+debug.qcom_ignore_uxperf=true
+
 # Netmgrd
 PRODUCT_PROPERTY_OVERRIDES += \
 ro.vendor.use_data_netmgrd=true \
