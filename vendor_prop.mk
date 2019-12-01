@@ -142,6 +142,8 @@ persist.vendor.ims.disableQXDMLogs=1
 
 # Media
 PRODUCT_PROPERTY_OVERRIDES += \
+debug.stagefright.omx_default_rank.sw-audio=1 \
+debug.stagefright.omx_default_rank=0 \
 media.msm8956hw=0 \
 mm.enable.smoothstreaming=true \
 mmp.enable.3g2=true \
@@ -151,6 +153,7 @@ vendor.mm.enable.qcom_parser=17825791 \
 vendor.vidc.disable.split.mode=1 \
 vendor.vidc.enc.disable.pq=true \
 vendor.video.disable.ubwc=1 \
+media.settings.xml=/vendor/etc/media_profiles_V1_0.xml \
 media.stagefright.thumbnail.prefer_hw_codecs=true
 
 # Rendering
