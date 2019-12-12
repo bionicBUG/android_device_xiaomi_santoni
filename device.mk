@@ -454,6 +454,10 @@ PRODUCT_PACKAGES += \
     wpa_supplicant \
     wpa_supplicant.conf
 
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/wifi/hostapd:vendor/bin/hw/hostapd \
+    $(LOCAL_PATH)/wifi/hostpad.android.rc:vendor/etc/init/hostpad.android.rc
+
 PRODUCT_PACKAGES += \
     android.hardware.wifi@1.0-service
 
