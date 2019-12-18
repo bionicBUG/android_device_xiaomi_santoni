@@ -385,6 +385,7 @@ PRODUCT_PACKAGES += \
     android.hardware.secure_element@1.0 \
     librmnetctl \
     libxml2 \
+    telephony-ext \
     libprotobuf-cpp-full \
     libqdMetaData.system
 
