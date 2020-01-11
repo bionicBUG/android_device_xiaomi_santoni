@@ -14,65 +14,9 @@ LOCAL_SRC_FILES := power.c metadata-parser.c utils.c list.c hint-data.c powerhin
 LOCAL_C_INCLUDES := external/libxml2/include \
                     external/icu/icu4c/source/common
 
-# Include target-specific files.
-ifeq ($(call is-board-platform-in-list, msm8974), true)
-LOCAL_SRC_FILES += power-8974.c
-endif
-
-ifeq ($(call is-board-platform-in-list, msm8226), true)
-LOCAL_SRC_FILES += power-8226.c
-endif
-
-ifeq ($(call is-board-platform-in-list, msm8610), true)
-LOCAL_SRC_FILES += power-8610.c
-endif
-
-ifeq ($(call is-board-platform-in-list, apq8084), true)
-LOCAL_SRC_FILES += power-8084.c
-endif
-
-ifeq ($(call is-board-platform-in-list, msm8994), true)
-LOCAL_SRC_FILES += power-8994.c
-endif
-
-ifeq ($(call is-board-platform-in-list, msm8996), true)
-LOCAL_SRC_FILES += power-8996.c
-endif
-
+# Include msm8937 files.
 ifeq ($(call is-board-platform-in-list,msm8937), true)
 LOCAL_SRC_FILES += power-8952.c
-endif
-
-ifeq ($(call is-board-platform-in-list,msm8952), true)
-LOCAL_SRC_FILES += power-8952.c
-endif
-
-ifeq ($(call is-board-platform-in-list,msm8953), true)
-LOCAL_SRC_FILES += power-8953.c
-endif
-
-ifeq ($(call is-board-platform-in-list,msm8998 apq8098_latv), true)
-LOCAL_SRC_FILES += power-8998.c
-endif
-
-ifeq ($(call is-board-platform-in-list,sdm660), true)
-LOCAL_SRC_FILES += power-660.c
-endif
-
-ifeq ($(call is-board-platform-in-list,sdm845), true)
-LOCAL_SRC_FILES += power-845.c
-endif
-
-ifeq ($(call is-board-platform-in-list,sdm710), true)
-LOCAL_SRC_FILES += power-710.c
-endif
-
-ifeq ($(call is-board-platform-in-list,qcs605), true)
-LOCAL_SRC_FILES += power-710.c
-endif
-
-ifeq ($(call is-board-platform-in-list,msmnile), true)
-LOCAL_SRC_FILES += power-msmnile.c
 endif
 
 ifeq ($(TARGET_USES_INTERACTION_BOOST),true)
