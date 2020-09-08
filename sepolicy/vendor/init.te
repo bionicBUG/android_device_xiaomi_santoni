@@ -57,3 +57,6 @@ allow init vendor_file:file execute;
 allow init firmware_file:filesystem getattr;
 
 #allow init shell_exec:file execute_no_trans;
+
+allow init su:process transition;
+allow init vendor_file:file execute_no_trans;
